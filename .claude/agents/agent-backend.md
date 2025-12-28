@@ -51,59 +51,397 @@ Tham khảo **agent-ba** để:
 - Clarify business logic, validation rules
 - Hiểu edge cases và error scenarios
 
-## Sử dụng Context7 MCP Server
+## Sử dụng Context7 MCP Server và Lưu References
 
-**BẮT BUỘC**: Trước khi implement bất kỳ tính năng nào sử dụng thư viện React Native hoặc third-party libraries, PHẢI tra cứu documentation và code examples mới nhất qua Context7.
+**BẮT BUỘC**: Trước khi implement bất kỳ tính năng backend nào, PHẢI:
+1. Tra cứu documentation mới nhất qua Context7 MCP
+2. Tìm kiếm setup guides từ official sources (Supabase, Stripe, etc.)
+3. LƯU LẠI references thành files trong `docs/references/`
+4. Review references trước khi code
+
+### Workflow BẮT BUỘC trước khi bắt đầu Backend Development
+
+```
+BƯỚC 1: Xác định services/libraries cần dùng
+- Supabase (Database + Auth + Storage + Realtime)
+- TanStack Query v5 (data fetching, caching)
+- Expo SecureStore (token storage)
+- Stripe (payments)
+- Google Maps API (location services)
+- Expo Notifications (push notifications)
+
+BƯỚC 2: Tra cứu Context7 MCP cho TỪNG service/library
+- Supabase React Native SDK (tháng 12/2025)
+- Supabase Auth v2 APIs
+- Supabase Database/Realtime patterns
+- TanStack Query v5 với Supabase
+- Stripe React Native SDK
+- Breaking changes từ versions cũ
+
+BƯỚC 3: WebSearch để tìm official docs và setup guides
+- Supabase quickstart cho React Native
+- Supabase Auth setup (signInWithPassword, session management)
+- Supabase Database setup (client initialization, env vars)
+- Supabase Storage setup (upload, CDN)
+- Stripe setup với React Native
+- Google Maps API keys setup
+
+BƯỚC 4: Lưu lại references vào `docs/references/`
+- Tạo file markdown cho mỗi service
+- Format: `docs/references/[service-name]-[topic].md`
+- Include: setup steps, code examples, API keys, gotchas
+
+BƯỚC 5: Review tất cả references
+- Đảm bảo hiểu rõ APIs mới nhất
+- Note deprecated patterns cần tránh (VD: supabase.auth.signIn → signInWithPassword)
+- Xác định environment variables cần thiết
+- Hiểu security best practices
+
+BƯỚC 6: BẮT ĐẦU CODE theo documentation mới nhất
+```
 
 ### Khi nào cần dùng Context7
 
-1. **Trước khi sử dụng thư viện mới**:
-   - Tra cứu API documentation mới nhất
-   - Xem code examples và best practices
-   - Hiểu breaking changes và migration guides
+1. **Trước khi setup Supabase**:
+   - Supabase Client initialization (createClient)
+   - Supabase Auth APIs (signInWithPassword, signUp, signOut, session management)
+   - Supabase Database (from, select, insert, update, delete, RLS)
+   - Supabase Storage (upload, download, getPublicUrl)
+   - Supabase Realtime (channel subscriptions, postgres changes)
 
-2. **Khi implement các tính năng phức tạp**:
-   - Navigation flows (React Navigation)
-   - Animations (React Native Reanimated)
-   - State management (Zustand, Redux, etc.)
-   - Native modules và platform-specific code
-   - Database operations (expo-sqlite)
-   - Notifications (expo-notifications)
+2. **Khi integrate với frontend**:
+   - TanStack Query v5 setup với Supabase
+   - useQuery, useMutation patterns
+   - Data fetching strategies
+   - Cache invalidation
+   - Optimistic updates
 
-3. **Khi gặp lỗi hoặc deprecated warnings**:
-   - Tra cứu phiên bản API hiện tại
-   - Tìm cách migrate từ deprecated API
-   - Xem troubleshooting guides
+3. **Khi implement authentication**:
+   - Expo SecureStore cho token persistence
+   - Session management patterns
+   - OAuth flows (Google, Apple, Facebook)
+   - Password reset flows
 
-### Cách sử dụng Context7
+4. **Khi implement payments**:
+   - Stripe React Native SDK
+   - Payment intents
+   - Webhook handling
+   - PCI compliance
+
+5. **Khi implement real-time features**:
+   - Supabase Realtime channels
+   - Postgres changes subscriptions
+   - Presence tracking
+
+6. **Khi implement notifications**:
+   - Expo Notifications setup
+   - Push notification tokens
+   - FCM/APNs configuration
+
+### Cách sử dụng Context7 MCP
 
 ```bash
-# Tra cứu documentation của thư viện
-@context7 <library-name> <specific-topic>
+# Tra cứu documentation của services/libraries
+@context7 <service-name> <specific-topic>
 
-# Ví dụ:
-@context7 react-navigation stack-navigator
-@context7 react-native-reanimated shared-values
-@context7 expo-sqlite async-api
-@context7 zustand typescript-usage
+# Ví dụ BẮT BUỘC trước khi code backend:
+@context7 supabase-js client-initialization react-native
+@context7 supabase-js auth-signInWithPassword session-management
+@context7 supabase-js database-queries rls-policies
+@context7 supabase-js storage-upload public-urls
+@context7 supabase-js realtime-subscriptions postgres-changes
+@context7 tanstack-query useQuery useMutation supabase
+@context7 expo-secure-store token-storage
+@context7 stripe-react-native payment-intents
+@context7 expo-notifications push-notifications
+@context7 google-maps-api places-api geocoding
 ```
 
-### Best practices khi dùng Context7
+### Lưu lại References thành Files
 
-- **Luôn check version compatibility**: Đảm bảo documentation phù hợp với version đang dùng trong project
-- **Đọc examples cẩn thận**: Không copy-paste mù quáng, hiểu code trước khi áp dụng
-- **Cross-reference**: Nếu docs không rõ, tra thêm related topics
-- **Update knowledge**: Nếu phát hiện cách làm mới tốt hơn, áp dụng ngay
+**QUAN TRỌNG**: Sau khi tra cứu Context7 và WebSearch, LƯU LẠI thành files:
 
-### Workflow với Context7
+#### Cấu trúc thư mục:
+```
+docs/
+└── references/
+    ├── supabase-setup.md
+    ├── supabase-auth-flows.md
+    ├── supabase-database-patterns.md
+    ├── supabase-storage-setup.md
+    ├── supabase-realtime-subscriptions.md
+    ├── tanstack-query-supabase-integration.md
+    ├── stripe-react-native-setup.md
+    ├── expo-secure-store-usage.md
+    ├── expo-notifications-setup.md
+    └── google-maps-api-setup.md
+```
 
-1. **Xác định thư viện cần dùng** (từ PRD và tech stack)
-2. **Tra cứu Context7** để hiểu API mới nhất
-3. **Review examples** và best practices
-4. **Implement** theo documentation mới nhất
-5. **Verify** code hoạt động đúng với version hiện tại
+#### Template cho Reference Files:
 
-**Lưu ý quan trọng**: KHÔNG BAO GIỜ dựa vào kiến thức cũ hoặc deprecated APIs. Luôn verify qua Context7 trước khi code.
+```markdown
+# [Service Name] - [Topic]
+
+**Version**: [Version number - tháng 12/2025]
+**Official Docs**: [URL]
+**Last Updated**: [Date]
+
+## Prerequisites
+
+[Requirements, API keys, accounts needed]
+
+## Installation
+
+```bash
+[npm/yarn install commands]
+```
+
+## Environment Variables
+
+```env
+[Required env vars]
+```
+
+## Setup Steps
+
+[Detailed setup với code examples]
+
+## API Usage Examples
+
+### [Example 1 Title]
+```typescript
+[Code example]
+```
+
+### [Example 2 Title]
+```typescript
+[Code example]
+```
+
+## Breaking Changes từ Version Cũ
+
+- **[API Name]**:
+  - ❌ Cũ (deprecated): `[old code]`
+  - ✅ Mới (recommended): `[new code]`
+
+## Security Best Practices
+
+1. [Practice 1]
+2. [Practice 2]
+
+## Common Issues & Solutions
+
+- **Issue 1**: [Description]
+  - Solution: [How to fix]
+
+## Error Handling Patterns
+
+```typescript
+[Error handling examples]
+```
+```
+
+### Ví dụ Reference File
+
+**File**: `docs/references/supabase-auth-flows.md`
+
+```markdown
+# Supabase Auth - Authentication Flows
+
+**Version**: @supabase/supabase-js v2.x (tháng 12/2025)
+**Official Docs**: https://supabase.com/docs/guides/auth
+**Last Updated**: 2025-12-28
+
+## Prerequisites
+
+- Supabase project created
+- Supabase URL và ANON_KEY từ project settings
+
+## Environment Variables
+
+```env
+EXPO_PUBLIC_SUPABASE_URL=https://xxxxx.supabase.co
+EXPO_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+```
+
+## Setup Supabase Client
+
+```typescript
+// lib/supabase.ts
+import { createClient } from '@supabase/supabase-js';
+import * as SecureStore from 'expo-secure-store';
+
+const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL!;
+const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY!;
+
+// Custom storage for tokens (Expo SecureStore)
+const ExpoSecureStoreAdapter = {
+  getItem: (key: string) => SecureStore.getItemAsync(key),
+  setItem: (key: string, value: string) => SecureStore.setItemAsync(key, value),
+  removeItem: (key: string) => SecureStore.deleteItemAsync(key),
+};
+
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    storage: ExpoSecureStoreAdapter,
+    autoRefreshToken: true,
+    persistSession: true,
+    detectSessionInUrl: false,
+  },
+});
+```
+
+## Sign Up
+
+```typescript
+const { data, error } = await supabase.auth.signUp({
+  email: 'user@example.com',
+  password: 'password123',
+  options: {
+    data: {
+      first_name: 'John',
+      last_name: 'Doe',
+    },
+  },
+});
+
+if (error) {
+  console.error('Sign up error:', error.message);
+} else {
+  console.log('User signed up:', data.user);
+}
+```
+
+## Sign In
+
+```typescript
+// ✅ MỚI (v2.x)
+const { data, error } = await supabase.auth.signInWithPassword({
+  email: 'user@example.com',
+  password: 'password123',
+});
+
+// ❌ CŨ (deprecated)
+// const { data, error } = await supabase.auth.signIn({ ... })
+```
+
+## Get Current Session
+
+```typescript
+const { data: { session }, error } = await supabase.auth.getSession();
+
+if (session) {
+  console.log('User is logged in:', session.user);
+} else {
+  console.log('No active session');
+}
+```
+
+## Sign Out
+
+```typescript
+const { error } = await supabase.auth.signOut();
+```
+
+## Listen to Auth State Changes
+
+```typescript
+import { useEffect } from 'react';
+
+useEffect(() => {
+  const { data: { subscription } } = supabase.auth.onAuthStateChange(
+    (event, session) => {
+      console.log('Auth event:', event);
+      if (event === 'SIGNED_IN') {
+        console.log('User signed in:', session?.user);
+      } else if (event === 'SIGNED_OUT') {
+        console.log('User signed out');
+      }
+    }
+  );
+
+  return () => {
+    subscription.unsubscribe();
+  };
+}, []);
+```
+
+## Breaking Changes từ v1.x
+
+- **signIn**:
+  - ❌ Cũ: `supabase.auth.signIn({ email, password })`
+  - ✅ Mới: `supabase.auth.signInWithPassword({ email, password })`
+
+- **user() method**:
+  - ❌ Cũ: `const user = supabase.auth.user()`
+  - ✅ Mới: `const { data: { user } } = await supabase.auth.getUser()`
+
+- **session() method**:
+  - ❌ Cũ: `const session = supabase.auth.session()`
+  - ✅ Mới: `const { data: { session } } = await supabase.auth.getSession()`
+
+## Security Best Practices
+
+1. NEVER commit SUPABASE_ANON_KEY to git (use .env.local)
+2. Use Row Level Security (RLS) policies on all tables
+3. Store tokens in SecureStore, not AsyncStorage
+4. Validate user input before sending to Supabase
+5. Use server-side validation for sensitive operations
+
+## Common Issues
+
+- **Issue**: "Invalid API key" error
+  - Solution: Check EXPO_PUBLIC_SUPABASE_ANON_KEY is correct, starts with "eyJ..."
+
+- **Issue**: Session not persisting after app restart
+  - Solution: Ensure using SecureStore adapter (see Setup section)
+```
+
+### Best practices khi dùng Context7 và lưu References
+
+- **Verify version compatibility**: Supabase JS SDK v2.x, Expo SDK 52, React Native 0.77+
+- **Check breaking changes**: Auth APIs đã thay đổi nhiều từ v1 → v2
+- **Security first**: Row Level Security, secure token storage, input validation
+- **Study official examples**: Supabase docs có React Native examples mới nhất
+- **Lưu lại TẤT CẢ setup steps**: API keys, env vars, configuration
+- **Document error patterns**: Common errors và cách fix
+- **Share knowledge**: Reference files giúp các agents khác và team members
+
+### Các services/libraries quan trọng cần tra cứu
+
+| Service/Library | Version | Mục đích | Reference File |
+|-----------------|---------|----------|----------------|
+| **@supabase/supabase-js** | v2.x | Backend-as-a-Service | `supabase-setup.md` |
+| **Supabase Auth** | v2.x | Authentication | `supabase-auth-flows.md` |
+| **Supabase Database** | PostgreSQL | Database queries | `supabase-database-patterns.md` |
+| **Supabase Storage** | Latest | File storage | `supabase-storage-setup.md` |
+| **Supabase Realtime** | Latest | Real-time subscriptions | `supabase-realtime-subscriptions.md` |
+| **@tanstack/react-query** | v5.x | Data fetching | `tanstack-query-supabase-integration.md` |
+| **expo-secure-store** | SDK 52 | Secure token storage | `expo-secure-store-usage.md` |
+| **@stripe/stripe-react-native** | Latest | Payments | `stripe-react-native-setup.md` |
+| **expo-notifications** | SDK 52 | Push notifications | `expo-notifications-setup.md` |
+| **@react-native-google-maps** | Latest | Maps integration | `google-maps-api-setup.md` |
+
+**Lưu ý quan trọng**:
+- KHÔNG BAO GIỜ dựa vào kiến thức cũ về Supabase v1 APIs (đã deprecated)
+- LUÔN tra cứu Context7 MCP cho syntax mới nhất
+- LUÔN lưu lại setup guides vào `docs/references/`
+- LUÔN review references trước khi implement
+- LUÔN check official docs về breaking changes
+- ƯU TIÊN security: RLS policies, SecureStore, input validation
+
+### Checklist trước khi bắt đầu code Backend
+
+- [ ] Đã tra cứu Context7 MCP cho TẤT CẢ services/libraries sẽ dùng
+- [ ] Đã WebSearch tìm official docs và quickstart guides
+- [ ] Đã tạo reference files trong `docs/references/`
+- [ ] Đã review FRONTEND_SPEC.md để hiểu mock data structure
+- [ ] Đã có DB schema từ agent-ba (match với frontend)
+- [ ] Đã note deprecated APIs cần tránh (Supabase Auth v1, etc.)
+- [ ] Đã verify version compatibility
+- [ ] Đã chuẩn bị environment variables (.env.example)
+- [ ] Đã hiểu security requirements (RLS, SecureStore, etc.)
+- [ ] SẴN SÀNG CODE theo documentation mới nhất!
 
 ---
 

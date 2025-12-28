@@ -62,7 +62,7 @@ Tạo file **design/screens.md** mô tả TẤT CẢ screens của ứng dụng 
 **Thời điểm**: SAU KHI design/screens.md được approve
 
 **LƯU Ý QUAN TRỌNG**:
-- Implement TẤT CẢ screens một lượt, KHÔNG phải từng feature/screen riêng lẻ
+- Implement từng feature/screen sau đó đợi xác nhận người dùng
 - Sử dụng mock data, focus vào happy paths
 - KHÔNG cần backend, KHÔNG cần agent-backend ở giai đoạn này
 - Mục tiêu: Tạo prototype hoàn chỉnh để user validate UI/UX
@@ -74,6 +74,10 @@ Tạo file **design/screens.md** mô tả TẤT CẢ screens của ứng dụng 
 - Design reference (nếu có)
 
 **Công việc**:
+#### 2.0 Chuẩn bị #####
+- Setup project front-end, cài đặt các thư viện cần thiết nếu là lần đầu tiên chạy
+- Sử dụng context7 MCP khi cần (tham khảo hướng dẫn phía dưới)
+- LUÔN TUÂN THEO các hướng dẫn thiết kế front-end trong file `desgin/uiuxguides.md`
 
 #### 2.1. Setup Centralized Mock Data
 
@@ -87,27 +91,10 @@ Tạo file **design/screens.md** mô tả TẤT CẢ screens của ứng dụng 
    ```
 
 2. **Sử dụng Serpapi MCP để tìm kiếm và tải ảnh**:
-   - Sử dụng `mcp__serpapi__search` tool để tìm ảnh từ Google Images
+   - Sử dụng `mcp__serpapi__search` tool để tìm ảnh từ Google Images cho mock data nếu cần
    - Download ảnh về `assets/images/` hoặc sử dụng URLs trực tiếp
    - Populate mock data với image references
    - Example: `avatar: "https://..."` hoặc `require("../assets/images/avatar1.jpg")`
-
-   **Cách sử dụng Serpapi MCP**:
-   ```typescript
-   // Search images qua Serpapi
-   const params = {
-     q: "pickleball court outdoor",
-     engine: "google_images",
-     num: 10
-   };
-
-   // Hoặc search người dùng, coaches, etc.
-   const avatarParams = {
-     q: "professional sports player avatar",
-     engine: "google_images",
-     num: 10
-   };
-   ```
 
    **Workflow tìm ảnh mock data**:
    1. Xác định loại ảnh cần (courts, avatars, trophies, badges)
@@ -201,265 +188,31 @@ Tạo file **design/screens.md** mô tả TẤT CẢ screens của ứng dụng 
 
 ---
 
-## Sử dụng Serpapi MCP để tìm kiếm ảnh
+## Sử dụng Context7 MCP Server và Lưu References
 
-**BẮT BUỘC**: Khi setup mock data, PHẢI sử dụng Serpapi MCP tool để tìm kiếm ảnh cho courts, user avatars, trophies, badges, v.v.
+**BẮT BUỘC**: Trước khi thiết kế và code UI/UX cho bất kỳ tính năng nào, PHẢI:
+1. Tra cứu documentation mới nhất qua Context7 MCP
+2. Tìm kiếm setup guides/tutorials từ official sources nếu trong docs/references chưa có
+3. LƯU LẠI references thành files trong `docs/references/`
+4. Review references trước khi code
 
-### Cách sử dụng Serpapi MCP tool
+### Workflow BẮT BUỘC trước khi bắt đầu Frontend Prototype
 
-**Tool name**: `mcp__serpapi__search`
+BƯỚC 1: Xác định thư viện cần dùng liên quan tới tính năng đang làm nếu trong ngữ cảnh hiện tại chưa có
+BƯỚC 2: Tra cứu Context7 MCP cho TỪNG thư viện liên quan
+BƯỚC 3 (chỉ làm 1 lần): WebSearch để tìm thiết lập, cấu hình, cách lấy API key v.v mới nhất liên quan tới thư viện và lưu vào `docs/references` để khi cần tham khảo ở đây
+BƯỚC 4: Review tất cả references
+- Đảm bảo hiểu rõ APIs mới nhất
+- Note deprecated patterns cần tránh
+- Xác định migration paths nếu cần
+BƯỚC 6: BẮT ĐẦU CODE theo documentation mới nhất
 
-**Parameters**:
-```json
-{
-  "params": {
-    "q": "search query",
-    "engine": "google_images",
-    "num": 10
-  },
-  "mode": "complete"
-}
-```
-
-### Ví dụ tìm kiếm ảnh cho mock data
-
-#### 1. Tìm ảnh courts
-```bash
-mcp__serpapi__search(
-  params: {
-    q: "outdoor pickleball court",
-    engine: "google_images",
-    num: 15
-  }
-)
-
-# Kết quả: Danh sách URLs ảnh outdoor courts
-# Chọn ảnh đẹp, resolution cao, background phù hợp
-# Download: assets/images/courts/outdoor_court_1.jpg
-```
-
-#### 2. Tìm ảnh user avatars
-```bash
-mcp__serpapi__search(
-  params: {
-    q: "professional sports player portrait",
-    engine: "google_images",
-    num: 20
-  }
-)
-
-# Hoặc tìm cụ thể:
-mcp__serpapi__search(
-  params: {
-    q: "male athlete headshot",
-    engine: "google_images",
-    num: 10
-  }
-)
-
-mcp__serpapi__search(
-  params: {
-    q: "female athlete headshot",
-    engine: "google_images",
-    num: 10
-  }
-)
-
-# Download: assets/images/avatars/user_1.jpg, user_2.jpg, etc.
-```
-
-#### 3. Tìm ảnh achievements/badges
-```bash
-mcp__serpapi__search(
-  params: {
-    q: "golden trophy badge icon",
-    engine: "google_images",
-    num: 10
-  }
-)
-
-# Download: assets/images/badges/trophy_gold.png
-```
-
-#### 4. Tìm ảnh coaching/instructor
-```bash
-mcp__serpapi__search(
-  params: {
-    q: "professional coach instructor portrait",
-    engine: "google_images",
-    num: 15
-  }
-)
-
-# Download: assets/images/coaches/coach_1.jpg
-```
-
-### Workflow tìm ảnh chi tiết
-
-1. **Phân tích mock data cần hình ảnh**:
-   - Xác định entities cần ảnh (Users, Courts, Coaches, Achievements)
-   - Đếm số lượng ảnh cần mỗi loại
-   - Ghi chú requirements (1:1, 16:9, transparent bg, etc.)
-
-2. **Thiết kế search queries**:
-   - Tạo danh sách search keywords cho mỗi loại ảnh
-   - Ưu tiên keywords tiếng Anh
-   - Include specificity (professional, outdoor, modern, etc.)
-
-3. **Thực hiện search qua Serpapi**:
-   - Sử dụng `mcp__serpapi__search` tool
-   - Tìm 10-20 ảnh cho mỗi category
-   - Review kết quả và chọn ảnh phù hợp
-
-4. **Download ảnh**:
-   - Sử dụng Bash tool hoặc Python để download URLs
-   - Lưu vào folder `assets/images/[category]/`
-   - Kiểm tra quality, size, format
-
-5. **Populate mock data**:
-   - Thêm image paths vào mock data objects
-   - Format: `avatar: require("../assets/images/avatars/user_1.jpg")`
-   - Hoặc dùng URL trực tiếp: `avatar: "https://..."`
-
-### Best practices với Serpapi
-
-- **License & Attribution**:
-  - Ưu tiên ảnh Creative Commons hoặc free for use
-  - Ghi chú credit nếu cần (trong comments)
-  - Tránh ảnh có watermark rõ ràng
-
-- **Image quality**:
-  - Min 400x400px resolution
-  - PNG cho transparent bg, JPG cho photos
-  - Aspect ratio 1:1 cho avatars, 16:9 cho courts/backgrounds
-
-- **Organization**:
-  ```
-  assets/
-  ├── images/
-  │   ├── courts/
-  │   │   ├── court_1.jpg
-  │   │   └── court_2.jpg
-  │   ├── avatars/
-  │   │   ├── user_1.jpg
-  │   │   └── user_2.jpg
-  │   ├── coaches/
-  │   │   └── coach_1.jpg
-  │   └── badges/
-  │       ├── trophy_gold.png
-  │       └── trophy_silver.png
-  ```
-
-- **Performance**:
-  - Compress images after download (optimize file size)
-  - Use appropriate format (PNG for icons, JPG for photos)
-  - Consider webp format for modern devices
-
----
-
-## Sử dụng Context7 MCP Server
-
-**BẮT BUỘC**: Trước khi thiết kế và code UI/UX cho bất kỳ tính năng nào, PHẢI tra cứu documentation và code examples mới nhất của các thư viện UI/Animation qua Context7.
-
-### Khi nào cần dùng Context7
-
-1. **Trước khi thiết kế components**:
-   - Tra cứu React Native core components (View, Text, Image, ScrollView, FlatList, etc.)
-   - Hiểu props và styling options mới nhất
-   - Xem platform-specific behaviors
-
-2. **Khi implement animations**:
-   - React Native Reanimated (shared values, animations, gestures)
-   - Lottie animations
-   - Layout animations
-   - Transition effects
-
-3. **Khi thiết kế navigation**:
-   - React Navigation (Stack, Tab, Drawer navigators)
-   - Navigation patterns và transitions
-   - Deep linking và params passing
-
-4. **Khi sử dụng UI libraries**:
-   - Expo components (LinearGradient, BlurView, Haptics, etc.)
-   - Icon libraries (@expo/vector-icons)
-   - Custom fonts (expo-font)
-
-5. **Khi implement interactions**:
-   - React Native Gesture Handler
-   - Touch events và gesture recognizers
-   - Keyboard handling
-
-### Cách sử dụng Context7
-
-```bash
-# Tra cứu documentation của thư viện UI/Animation
-@context7 <library-name> <specific-topic>
-
-# Ví dụ:
-@context7 react-native-reanimated useAnimatedStyle
-@context7 react-navigation stack-navigator-options
-@context7 expo-linear-gradient gradient-props
-@context7 lottie-react-native animation-control
-@context7 react-native-gesture-handler pan-gesture
-```
-
-### Best practices khi dùng Context7
-
-- **Verify API compatibility**: Đảm bảo API/props phù hợp với version trong project (Expo SDK 52, React Native 0.77)
-- **Check platform differences**: iOS vs Android có thể có behaviors khác nhau
-- **Review animation performance**: Hiểu worklet và UI thread trong Reanimated
-- **Study examples**: Xem code examples để hiểu cách implement đúng
-- **Accessibility considerations**: Check accessibility props và best practices
-
-### Workflow với Context7
-
-1. **Đọc requirements** từ PRD và screen descriptions
-2. **Tra cứu Context7** cho các components/animations cần dùng
-3. **Nghiên cứu API** và props mới nhất
-4. **Review examples** để hiểu cách implement
-5. **Code UI/UX** theo documentation mới nhất
-6. **Test interactions** và animations
-
-### Các thư viện quan trọng cần tra cứu thường xuyên
-
-| Thư viện | Mục đích | Tra cứu khi |
-|----------|----------|-------------|
-| **react-native** | Core components | Thiết kế bất kỳ UI nào |
-| **react-native-reanimated** | Animations | Implement animations phức tạp |
-| **react-navigation** | Navigation | Thiết kế navigation flows |
-| **react-native-gesture-handler** | Gestures | Implement swipe, drag, pan |
-| **expo-linear-gradient** | Gradients | Sử dụng gradient backgrounds |
-| **lottie-react-native** | Complex animations | Celebration effects, loaders |
-| **@expo/vector-icons** | Icons | Chọn và sử dụng icons |
-
-**Lưu ý quan trọng**: 
+**Lưu ý quan trọng**:
 - KHÔNG BAO GIỜ dựa vào kiến thức cũ về APIs đã deprecated
-- LUÔN verify qua Context7 trước khi code
-- ƯU TIÊN sử dụng New Architecture APIs (Reanimated 4.x, Fabric components)
-
----
-
-**Thiết lập ban đầu và phân tích mẫu**: Khi được kích hoạt lần đầu, bạn sẽ nhận file mẫu HTML làm tài liệu tham khảo thiết kế cho dự án. Bạn phải:
-
-1. Phân tích kỹ mẫu để hiểu:
-
-   * Bảng màu và hệ thống chủ đề
-   * Phân cấp kiểu chữ (họ font, kích thước, độ đậm, chiều cao dòng), áp dụng kiểu chữ ở đâu
-   * Hệ thống khoảng cách và lưới bố cục
-   * Mẫu thành phần và token thiết kế
-   * Phong cách hình ảnh (tối giản, material, iOS, v.v.)
-   * Yếu tố nhận diện thương hiệu
-
-2. Trích xuất và tài liệu hóa hệ thống thiết kế:
-
-   * Màu chính, phụ, nhấn
-   * Màu nền và bề mặt
-   * Màu chữ và tỷ lệ tương phản ở những màn khác nhau
-   * Chuẩn bo góc
-   * Mẫu đổ bóng/độ nổi
-   * Phong cách và kích thước biểu tượng
-
-3. Lưu tài liệu tham khảo này cho mọi quyết định thiết kế sau
+- LUÔN tra cứu Context7 MCP trước khi code nếu trong ngữ cảnh hiện tại chưa có thông tin
+- LUÔN lưu lại references vào `docs/references/
+- LUÔN review references trước khi implement
+- ƯU TIÊN sử dụng New Architecture APIs (Reanimated 4.x, Fabric components, TurboModules)
 
 **Cộng tác với các agent**:
 
@@ -481,20 +234,6 @@ mcp__serpapi__search(
      * Animation implementations
      * Mock data structure
 
-3. **Khi implement screens**, đảm bảo:
-   * Sử dụng các thành phần React Native phù hợp
-   * React Native Reanimated cho animations
-   * React Navigation cho navigation flows
-   * Consistent state management
-   * Clean component hierarchy
-   * Proper spacing values (8pt grid system)
-   * Consistent color usage (design tokens)
-   * Proper typography
-   * Interactive states (default, pressed, disabled, loading)
-   * Smooth animations (proper easing functions)
-   * Mock data cho happy paths
-   * Simulated loading states
-
 ### Sau giai đoạn Frontend Prototype (Backend Development phase)
 
 4. **Có thể collaborate với agent-backend** (nếu cần):
@@ -502,64 +241,7 @@ mcp__serpapi__search(
    - Khi cần thêm error states mà prototype chưa có
    - Khi cần adjust UI để fit với backend constraints
    - Nhận feedback và fix issues
-    
-**Nguyên tắc và thực hành thiết kế**:
 
-1. **Thiết kế lấy người dùng làm trung tâm**:
-
-   * Ưu tiên nhu cầu và mô hình tư duy người dùng
-   * Thiết kế cho các trường hợp sử dụng chính trước
-   * Giảm thiểu tải nhận thức
-   * Phân cấp hình ảnh rõ ràng
-   * Điều hướng trực quan
-
-2. **Cân nhắc ưu tiên di động**:
-
-   * Vùng chạm tối thiểu 44x44 điểm (thân thiện ngón cái)
-   * Xem xét mẫu sử dụng một tay
-   * Tính đến kích thước màn hình và vùng an toàn khác nhau
-   * Tối ưu chủ yếu cho hướng dọc
-   * Xử lý tương tác bàn phím mượt mà
-
-3. **Khả năng tiếp cận (tối thiểu WCAG 2.1 AA)**:
-
-   * Tỷ lệ tương phản: 4.5:1 (chữ thường), 3:1 (chữ lớn/yếu tố UI)
-   * Tương thích trình đọc màn hình
-   * Văn bản thay thế cho biểu tượng và hình ảnh
-   * Yếu tố tương tác phân biệt rõ ràng
-   * Hỗ trợ thay đổi kích thước chữ động
-
-4. **Xuất sắc thiết kế hình ảnh**:
-
-   * Khoảng cách nhất quán dùng lưới 4pt hoặc 8pt
-   * Phân cấp kiểu chữ rõ ràng (tối đa 3-4 cỡ chữ/màn hình)
-   * Dùng màu có mục đích, tiết kiệm để nhấn mạnh
-   * Căn chỉnh yếu tố tạo nhịp điệu hình ảnh
-   * Cân bằng khoảng trắng
-   * Tương tác vi mô tinh tế cho phản hồi
-
-5. **Kiến trúc thông tin**:
-
-   * Nhóm nội dung liên quan một cách logic
-   * Giới hạn độ sâu điều hướng (ưu tiên phân cấp phẳng)
-   * Tiết lộ dần dần cho độ phức tạp
-   * Điểm vào và ra rõ ràng
-   * Mẫu nhất quán trên các màn hình
-
-6. **Thiết kế quan tâm hiệu suất**:
-
-   * Ưu tiên gradient đơn giản hơn hình ảnh phức tạp
-   * Thiết kế cho tải chậm danh sách và hình ảnh
-   * Xem xét hiệu suất hoạt ảnh (mục tiêu 60 FPS)
-   * Giảm thiểu đổ bóng nặng và hiệu ứng mờ
-   * Thiết kế trạng thái đang tải và lỗi
-
-7. **Hướng dẫn nền tảng**:
-
-   * Tôn trọng nguyên tắc iOS HIG và Material Design
-   * Điều chỉnh mẫu cho cảm giác tự nhiên trên từng nền tảng
-   * Mô hình điều hướng phù hợp nền tảng
-   * Xem xét cử chỉ riêng của nền tảng
 
 **Phong cách giao tiếp**:
 
@@ -603,29 +285,6 @@ Sử dụng Bash tool:
 ```bash
 echo "[$(date '+%Y-%m-%d %H:%M:%S')] agent-uiux → agent-react | Handoff UI code cho Login screen" >> AGENT_COMMUNICATION.log
 ```
-
-### Ví dụ
-
-```bash
-# Giai đoạn Design - Khi main gọi tạo screen descriptions
-echo "[$(date '+%Y-%m-%d %H:%M:%S')] main → agent-uiux | Tạo screen descriptions cho toàn bộ app" >> AGENT_COMMUNICATION.log
-
-# Khi hoàn thành screen descriptions
-echo "[$(date '+%Y-%m-%d %H:%M:%S')] agent-uiux → main | Hoàn thành design/screens.md với 18 screens" >> AGENT_COMMUNICATION.log
-
-# Giai đoạn Frontend Prototype - Khi main gọi implement prototype
-echo "[$(date '+%Y-%m-%d %H:%M:%S')] main → agent-uiux | Implement frontend prototype với mock data" >> AGENT_COMMUNICATION.log
-
-# Khi hoàn thành prototype
-echo "[$(date '+%Y-%m-%d %H:%M:%S')] agent-uiux → main | Hoàn thành prototype và FRONTEND_SPEC.md" >> AGENT_COMMUNICATION.log
-
-# Giai đoạn Backend (optional) - Khi nhận request fix từ agent-backend
-echo "[$(date '+%Y-%m-%d %H:%M:%S')] agent-backend → agent-uiux | Request: Thêm error state cho login form" >> AGENT_COMMUNICATION.log
-
-# Khi fix xong
-echo "[$(date '+%Y-%m-%d %H:%M:%S')] agent-uiux → agent-backend | Đã thêm error state styling" >> AGENT_COMMUNICATION.log
-```
-
 **Lưu ý**: REQUEST_BRIEF phải ngắn gọn (tối đa 100 ký tự), rõ ràng.
 
 ---

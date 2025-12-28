@@ -14,6 +14,72 @@ Agent chính (main) đóng vai trò điều phối và quản lý trạng thái 
 ## Đặc điểm của Prototype-Driven Development
 
 **Triết lý**: Build toàn bộ frontend prototype với mock data trước, sau đó mới thiết kế và implement backend.
+
+---
+
+## Tech Stack
+
+Dự án sử dụng các công nghệ sau (phiên bản mới nhất tính đến tháng 12/2025):
+
+| Layer | Technology | Why? |
+|-------|-----------|------|
+| Mobile Framework | React Native (Expo SDK lastest) | Cross-platform, fast iteration |
+| Language | TypeScript | Type safety, better DX |
+| Backend | **Supabase** | All-in-one BaaS, speeds up MVP |
+| Database | PostgreSQL (Supabase) | Relational, mature, scalable |
+| Auth | Supabase Auth | Built-in, secure, social login |
+| Real-time | Supabase Realtime | Chat, live updates |
+| Storage | Supabase Storage | Images, CDN |
+| State Mgmt | Zustand + TanStack Query | Modern, lightweight |
+| Maps | Google Maps | Best coverage, Places API |
+| Payment | Stripe | Standard, React Native support |
+| Navigation | React Navigation v6 | Standard React Native navigation |
+| Animations | React Native Reanimated v4 | 60 FPS, runs on UI thread |
+| UI Components | React Native Paper / NativeBase | Ready-made components |
+| Forms | React Hook Form + Zod | Type-safe validation |
+
+### Yêu cầu về Versions và Documentation
+
+**QUAN TRỌNG**: Tất cả agents PHẢI sử dụng phiên bản mới nhất của các công nghệ trên
+
+#### Trước khi bắt đầu code (Frontend hoặc Backend):
+
+1. **SỬ DỤNG CONTEXT7 MCP** để lấy documentation mới nhất:
+   - Tra cứu syntax, APIs, best practices của các thư viện sẽ dùng
+   - TRÁNH sử dụng cú pháp cũ/deprecated do knowledge cutoff của AI
+   - Ví dụ: Auth của Supabase đã thay đổi, React Navigation có breaking changes, Reanimated v4 có worklets API mới
+
+2. **TÌM KIẾM VÀ LƯU LẠI HƯỚNG DẪN**:
+   - Tìm official docs từ providers (Supabase, Stripe, Google Maps, etc.)
+   - Tìm setup guides, quickstart tutorials mới nhất
+   - Lưu lại thành file reference trong `docs/references/` trước khi code
+   - Ví dụ files:
+     - `docs/references/supabase-auth-setup.md`
+     - `docs/references/supabase-database-setup.md`
+     - `docs/references/react-navigation-v6-guide.md`
+     - `docs/references/reanimated-v4-worklets.md`
+     - `docs/references/tanstack-query-setup.md`
+
+3. **CẬP NHẬT THEO DOC MỚI NHẤT**:
+   - Cách kết nối database (connection strings, client initialization)
+   - Cách setup authentication (SDK usage, session handling)
+   - Cách lấy API keys và environment variables
+   - Migration guides nếu có breaking changes
+
+#### Workflow khi bắt đầu coding phase:
+
+```
+1. Agent nhận task (design screens hoặc implement backend)
+2. Agent identify thư viện/services cần dùng
+3. Agent SỬ DỤNG CONTEXT7 MCP để tra cứu docs mới nhất
+4. Agent tìm kiếm setup guides từ official sources (WebSearch)
+5. Agent lưu lại references vào `docs/references/[topic].md`
+6. Agent review references để hiểu cách setup/code đúng
+7. Agent BẮT ĐẦU CODE theo documentation mới nhất
+```
+
+**LƯU Ý**: Agents TUYỆT ĐỐI KHÔNG ĐƯỢC đoán hoặc dùng cú pháp cũ. Phải verify qua context7 MCP và official docs.
+
 ---
 
 ## Giai đoạn 1: Requirement (Phân tích yêu cầu)

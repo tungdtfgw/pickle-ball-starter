@@ -1,21 +1,23 @@
 # PickleBall Dating - Mobile App
 
-Ứng dụng mobile kết nối cộng đồng người chơi pickleball, đặt sân, tìm đối thủ và huấn luyện viên.
+Ứng dụng mẫu cho khóa học Vibe Code. 
+Phát triển một mobile app kết nối cộng đồng người chơi pickleball, đặt sân, tìm đối thủ và huấn luyện viên theo mô hình phát triển Prototype
 
 ## Công nghệ
 
 - **Framework**: React Native
-- **Development Tool**: Claude Code (Cursor IDE)
+- **Development Tool**: Claude Code CLI
 - **Platform**: iOS & Android
 
 ## Cấu trúc dự án
 
 ```
 PickleBallDating-starter/
-├── .claude/                    # Claude Code configuration
-│   ├── agents/                 # Custom agents (BA, Backend, UI/UX)
-│   ├── commands/               # Custom commands
-│   └── settings.json           # Claude settings
+├── .claude/                # Claude Code configuration
+│   └── agents/                 # Custom agents (BA, Backend, UI/UX)
+│       ├── agent-ba/
+│       ├── agent-backend/
+│       └── agent-uiux/
 ├── design/                     # Tài liệu thiết kế
 │   ├── flows/                  # Flow diagrams (F01-F16)
 │   └── screens/                # Screen specifications
@@ -24,7 +26,8 @@ PickleBallDating-starter/
 │   └── PROJECT_STATUS.template.md
 ├── PRD.md                      # Product Requirements Document
 ├── PROJECT_STATUS.md           # Trạng thái dự án
-└── CLAUDE.md                   # Hướng dẫn sử dụng Claude Code
+├── CLAUDE.md                   # Hướng dẫn quy trình phát triển
+└── AGENT_COMMUNICATION.log     # Log giao tiếp giữa các agents
 ```
 
 ## Quy trình phát triển với Claude Code
@@ -36,108 +39,65 @@ PickleBallDating-starter/
 git clone https://github.com/tungdtfgw/pickle-ball-starter.git
 cd pickle-ball-starter
 
-# Mở project trong Cursor
-cursor .
+# Khởi động Claude Code
+claude
 ```
 
-### 2. Sử dụng Claude Agents
+### 2. Hiểu về Custom Agents
 
-Dự án có 3 agents chuyên biệt trong `.claude/agents/`:
+Dự án sử dụng **3 custom agents** được định nghĩa trong `.claude/agents/`:
 
-- **agent-ba.md**: Phân tích nghiệp vụ, viết specs, flows
-- **agent-backend.md**: Thiết kế API, database, backend logic
-- **agent-uiux.md**: Thiết kế UI/UX, components, styling
+- **agent-ba**: Phân tích nghiệp vụ, viết PRD, thiết kế flows, database schema
+- **agent-backend**: Implement backend, API, database, integration
+- **agent-uiux**: Thiết kế UI/UX, implement frontend prototype
 
-**Cách sử dụng:**
-1. Mở Cursor IDE
-2. Chọn agent phù hợp trong Claude panel
-3. Chat với agent để phát triển feature
+**Cách hoạt động:**
+- Các agents được **agent chính tự động gọi** theo quy trình trong CLAUDE.md
+- Bạn chỉ cần chat với agent chính, nó sẽ điều phối các custom agents
+- Ví dụ: "Tôi muốn xây dựng app hẹn hò cho pickleball" → agent chính sẽ tự động gọi agent-ba → agent-uiux → agent-backend theo workflow
 
-### 3. Workflow phát triển feature
+### 3. Workflow phát triển (Prototype-Driven Development)
 
-#### Bước 1: Phân tích nghiệp vụ
+Dự án tuân theo quy trình **4 giai đoạn** được định nghĩa trong `CLAUDE.md`:
+
+#### Giai đoạn 1: Requirement Analysis
 ```
-@agent-ba Phân tích và viết spec cho feature [tên feature]
+You: "Tôi muốn xây dựng [mô tả feature/app]"
 ```
-- Tạo flow diagram trong `design/flows/`
-- Cập nhật `PRD.md` nếu cần
+- Agent chính → gọi agent-ba
+- Agent-ba phân tích yêu cầu, tạo `PRD.md`
+- Bạn review và approve PRD
 
-#### Bước 2: Thiết kế UI/UX
+#### Giai đoạn 2: Design
 ```
-@agent-uiux Thiết kế màn hình cho [tên feature]
+[Sau khi PRD được approve]
 ```
-- Tạo screen spec trong `design/screens/`
-- Định nghĩa components cần thiết
+- Agent chính → gọi agent-ba thiết kế activity flows
+- Agent chính → gọi agent-uiux thiết kế screens (từng screen một)
+- Bạn approve từng screen design trong `design/screens/`
 
-#### Bước 3: Implementation
+#### Giai đoạn 3: Frontend Prototype
 ```
-@agent-backend Implement API cho [tên feature]
-hoặc
-Implement UI component theo spec [đường dẫn spec]
+[Sau khi design được approve]
 ```
+- Agent chính → gọi agent-uiux implement toàn bộ UI với mock data
+- Agent-uiux tạo `FRONTEND_SPEC.md`
+- Bạn test prototype và approve UI/UX
 
-#### Bước 4: Review & Test
-- Claude Code sẽ suggest improvements
-- Run linter và fix issues
-- Test trên simulator/device
-
-### 4. Quy ước commit
-
-```bash
-# Format: <type>: <description>
-
-feat: Thêm màn hình đăng ký
-fix: Sửa lỗi validation form đăng nhập
-docs: Cập nhật flow F01
-style: Format code theo convention
-refactor: Tái cấu trúc auth service
-test: Thêm unit tests cho user profile
+#### Giai đoạn 4: Backend Development
 ```
-
-## Quy ước code
-
-### Naming Convention
-
-#### Python (Backend)
-```python
-# snake_case cho variables, functions
-user_profile = get_user_profile(user_id)
-
-# PascalCase cho Classes
-class UserService:
-    pass
+[Sau khi frontend prototype được approve]
 ```
-
-#### JavaScript/React Native (Frontend)
-```javascript
-// camelCase cho variables, functions
-const userName = getUserName();
-
-// PascalCase cho Components
-const UserProfile = () => {};
-
-// UPPER_CASE cho constants
-const API_BASE_URL = 'https://api.example.com';
-```
-
-### File Structure
-
-```
-src/
-├── screens/           # Màn hình chính
-├── components/        # Components tái sử dụng
-├── services/          # API calls, business logic
-├── utils/             # Helper functions
-├── constants/         # Constants, configs
-└── types/             # TypeScript types/interfaces
-```
+- Agent chính → gọi agent-ba thiết kế database schema
+- Agent chính → gọi agent-backend implement backend + integration
+- Bạn test toàn bộ app với real data
 
 ## Tài liệu quan trọng
 
 ### Product & Design
 - **PRD.md**: Yêu cầu sản phẩm chi tiết
 - **PROJECT_STATUS.md**: Trạng thái phát triển hiện tại
-- **design/flows/**: 16 flows nghiệp vụ (F01-F16)
+- **design/flows/**: flows nghiệp vụ
 - **design/screens/**: Specs chi tiết từng màn hình
 
 ### Development
@@ -146,117 +106,28 @@ src/
 
 ## Tips & Best Practices
 
-### Làm việc với Claude Code
+### Làm việc với Claude Code CLI
 
-1. **Specific prompts**: Càng cụ thể càng tốt
+1. **Mô tả rõ ràng ý tưởng/yêu cầu**
    ```
    ❌ "Làm màn hình đăng nhập"
-   ✅ "Implement màn hình đăng nhập theo spec design/screens/01-login-register.md, 
-       sử dụng React Native Paper components"
+   ✅ "Tôi muốn xây dựng màn hình đăng nhập cho app pickleball dating,
+       có email/password và social login (Google, Facebook)"
    ```
 
-2. **Reference files**: Tag files để Claude hiểu context
-   ```
-   Implement theo @design/flows/F01-dang-ky-xac-thuc.md
-   ```
+2. **Để agent chính điều phối workflow**
+   - Không cần chỉ định agent cụ thể
+   - Agent chính sẽ tự động gọi agent-ba → agent-uiux → agent-backend
+   - Bạn chỉ cần approve/feedback ở mỗi checkpoint
 
-3. **Iterative development**: Làm từng bước nhỏ
-   ```
-   1. Tạo UI layout
-   2. Thêm validation
-   3. Connect API
-   4. Handle errors
-   ```
+3. **Theo dõi tiến trình**
+   - Check `PROJECT_STATUS.md` để biết giai đoạn hiện tại
+   - Check `AGENT_COMMUNICATION.log` để xem lịch sử giao tiếp giữa agents
 
-4. **Code review**: Yêu cầu Claude review
-   ```
-   Review code này và suggest improvements về performance và best practices
-   ```
-
-### Debugging
-
-```
-# Yêu cầu Claude phân tích lỗi
-Lỗi này xuất hiện khi [mô tả], hãy phân tích và sửa:
-[paste error log]
-
-# Yêu cầu Claude debug
-Debug function này, nó không hoạt động đúng khi [điều kiện]:
-[paste code]
-```
-
-### Refactoring
-
-```
-# Yêu cầu optimize code
-Refactor code này để dễ maintain và test hơn:
-[paste code]
-
-# Apply design patterns
-Apply Repository pattern cho data layer này
-```
-
-## Commands hữu ích
-
-### Git
-```bash
-# Check status
-git status
-
-# Commit và push
-git add .
-git commit -m "feat: your message"
-git push
-
-# Sync với remote
-git pull
-```
-
-### Development
-```bash
-# Install dependencies (sau khi init React Native)
-npm install
-# hoặc
-yarn install
-
-# Run on iOS
-npm run ios
-
-# Run on Android
-npm run android
-
-# Start Metro bundler
-npm start
-```
-
-## Troubleshooting
-
-### Claude không hiểu context
-- Tag đúng files với @ trong prompt
-- Cung cấp đủ background information
-- Chia nhỏ request thành các bước
-
-### Code không chạy
-- Yêu cầu Claude check linter errors
-- Run `npm install` nếu thiếu dependencies
-- Clear cache: `npm start -- --reset-cache`
-
-### Git conflicts
-```bash
-# Yêu cầu Claude giải quyết conflict
-Giúp tôi resolve git conflict này:
-[paste conflict]
-```
-
-## Liên hệ & Support
-
-- **Repository**: https://github.com/tungdtfgw/pickle-ball-starter
-- **Claude Code Docs**: Xem `CLAUDE.md`
-
-## License
-
-[Thêm license nếu cần]
-
+4. **Iterative development**
+   - Approve từng giai đoạn trước khi chuyển sang giai đoạn tiếp theo
+   - Feedback cụ thể nếu cần điều chỉnh
+   - Test kỹ ở Giai đoạn 3 (Frontend Prototype) trước khi invest vào backend
 ---
 
-**Lưu ý**: Đây là dự án phát triển với AI-assisted development. Luôn review code được generate trước khi commit.
+**Lưu ý**: Đây là dự án phát triển với AI-assisted development (Claude Code). Luôn review và test code được generate trước khi commit.
