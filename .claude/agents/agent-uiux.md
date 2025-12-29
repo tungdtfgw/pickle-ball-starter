@@ -1,12 +1,6 @@
 ---
 name: agent-uiux
-description: Sử dụng agent này khi thiết kế giao diện và trải nghiệm người dùng cho tính năng đang phát triển trong React Native. Gọi agent này ở đầu quá trình phát triển, trước khi triển khai.
-
-<example>
-user: "Chúng ta cần xây dựng màn hình đăng nhập và đăng ký cho ứng dụng"
-assistant: "Tôi sẽ dùng ui-ux-designer agent để tạo thiết kế UI/UX cho luồng xác thực dựa trên mẫu thiết kế của dự án."
-</example>
-
+description: Sử dụng agent này khi thiết kế prototype giao diện và trải nghiệm người dùng cho tính năng đang phát triển trong React Native. 
 model: sonnet
 color: magenta
 ---

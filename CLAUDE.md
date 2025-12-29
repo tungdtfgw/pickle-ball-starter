@@ -196,26 +196,7 @@ Thiết kế luồng nghiệp vụ và mô tả chi tiết tất cả screens c�
    [UX considerations, validations, error handling]
    ```
 
-5. **Workflow chi tiết:**
-
-   A. **Agent-uiux tạo screen 1**
-      - Tạo file chi tiết đầy đủ
-      - Báo cáo hoàn thành
-      - **DỪNG LẠI** (KHÔNG tạo screen 2)
-
-   B. **User xác nhận screen 1**
-      - Approve → Tiếp tục screen 2
-      - Sửa → Yêu cầu chỉnh sửa
-      - Dừng → Review lại
-
-   C. **Agent-uiux tạo screen 2** (khi user approve)
-      - Tạo file chi tiết
-      - Báo cáo hoàn thành
-      - **DỪNG LẠI**
-
-   D. **Lặp lại** cho tất cả screens
-
-7. **Checkpoint:**
+5. **Checkpoint:**
    - ✅ Người dùng xác nhận activity diagrams
    - ✅ Người dùng xác nhận **từng screen** trước khi qua screen tiếp theo
    - ✅ Tất cả screens được approve trong `/design/screens/[NN]-[screen-name].md`
@@ -226,7 +207,7 @@ Thiết kế luồng nghiệp vụ và mô tả chi tiết tất cả screens c�
 ## Giai đoạn 3: Frontend Prototype (Xây dựng giao diện hoàn chỉnh)
 
 ### Mục tiêu
-Implement TẤT CẢ screens của ứng dụng với mock data, tạo prototype hoàn chỉnh để user test UI/UX trước khi invest vào backend.
+Implement các screens của ứng dụng với mock data, tạo prototype hoàn chỉnh để user test UI/UX trước khi invest vào backend.
 
 ### Quy trình
 
@@ -246,14 +227,16 @@ Implement TẤT CẢ screens của ứng dụng với mock data, tạo prototype
      export const MOCK_MESSAGES = [...];
      ```
 
-3. **Agent-uiux** sử dụng **MCP Image Search** để:
+3. **Agent-uiux** sử dụng **MCP Serpapi** để:
    - Tìm và tải ảnh phù hợp cho mock data (courts, avatars, etc.)
    - Lưu ảnh vào `assets/images/` hoặc sử dụng image URLs
    - Populate mock data với image references
+   
+4. Kiểm tra xem đã có file `desgin/uiuxguides.md` chưa? Nếu chưa yêu cầu người dùng sử dụng command /copy-uiux để tạo
 
 #### 3.2. Implement All Screens
 
-1. **Agent-uiux** implement TẤT CẢ screens theo thiết kế:
+1. **Agent-uiux** implement các screens theo thiết kế, tham khảo quy tắc thiết kế trong file `desgin/uiuxguides.md`, sử dụng context7 mcp để đảm bảo cú pháp thư viện cập nhật:
    - Xây dựng component structure theo atomic design
    - Implement styling với design tokens
    - Implement navigation flows (React Navigation)
@@ -297,6 +280,7 @@ Implement TẤT CẢ screens của ứng dụng với mock data, tạo prototype
 
 ### Mục tiêu
 Thiết kế database, implement backend APIs, và integrate với frontend prototype đã có sẵn.
+Lưu ý: Luôn sử dụng context7 mcp đảm bảo code back-end sử dụng cú pháp cập nhật của thư viện khi code.
 
 ### Quy trình
 
@@ -649,7 +633,7 @@ Main: Update status → Frontend Prototype phase
 Main → agent-uiux: Implement ALL screens với mock data
 agent-uiux: Setup data/mockData.ts (centralized mock)
 agent-uiux: Use MCP Image Search để lấy ảnh courts, avatars
-agent-uiux: Implement 18 screens với navigation
+agent-uiux: Implement screens với navigation
 agent-uiux: Tạo FRONTEND_SPEC.md
 User: ✓ Test prototype, approve UI/UX
 Main: Update status → Backend Development phase
